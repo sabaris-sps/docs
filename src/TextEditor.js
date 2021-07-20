@@ -1,34 +1,49 @@
-import { useCallback } from "react";
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
-
-const TOOLBAR_OPTIONS = [
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  [{ font: [] }],
-  [{ list: "ordered" }, { list: "bullet" }],
-  ["bold", "italic", "underline"],
-  [{ color: [] }, { background: [] }],
-  [{ script: "sub" }, { script: "super" }],
-  [{ align: [] }],
-  ["image", "blockquote", "code-block"],
-  ["clean"],
-];
+import { useEffect, useState } from "react";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 function TextEditor() {
-  const wrapperRef = useCallback((wrapper) => {
-    if (wrapper == null) return;
+  const [data, setData] = useState(localStorage.getItem("react-app-text-data"));
+  const [textValue, setTextValue] = useState("");
 
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
-    const quill = new Quill(editor, {
-      theme: "snow",
-      modules: { toolbar: TOOLBAR_OPTIONS },
-    });
-    quill.enable();
+  useEffect(() => {
+    setTextValue(data);
   }, []);
 
-  return <div className="container" ref={wrapperRef}></div>;
+  const TOOLBAR_OPTIONS = [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ font: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["bold", "italic", "underline"],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    [{ align: [] }],
+    ["image", "blockquote", "code-block"],
+    ["clean"],
+  ];
+
+  const handleChange = (value) => {
+    console.log(value);
+    setTextValue(value);
+  };
+
+  const handleSaveOnKeyPress = (e) => {
+    e.preventDefault();
+    e.key === "Alt"
+      ? localStorage.setItem("react-app-text-data", textValue)
+      : console.log();
+  };
+
+  return (
+    <ReactQuill
+      className="container"
+      theme={"snow"}
+      onKeyUp={handleSaveOnKeyPress}
+      onChange={handleChange}
+      value={textValue}
+      modules={{ toolbar: TOOLBAR_OPTIONS }}
+    />
+  );
 }
 
 export default TextEditor;
