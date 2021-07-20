@@ -8,6 +8,7 @@ function TextEditor() {
 
   useEffect(() => {
     setTextValue(data);
+    localStorage.setItem("react-app-text-data", "");
   }, []);
 
   const TOOLBAR_OPTIONS = [
